@@ -2,7 +2,7 @@ package com.ajay.ailms.controller;
 
 import com.ajay.ailms.dto.CourseDto;
 import com.ajay.ailms.service.CourseService;
-import com.ajay.ailms.service.EnrollementService;
+import com.ajay.ailms.service.EnrollmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,15 +12,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/v1/student/")
 @RequiredArgsConstructor
 @PreAuthorize("hasRole('STUDENT')")
 public class UserController {
     private final CourseService courseService;
-    private final EnrollementService enrollementService;
+    private final EnrollmentService enrollmentService;
 
 
     @GetMapping("/enroll-course")
@@ -42,7 +40,17 @@ public class UserController {
 
     @PostMapping("/{courseId}/enroll-course")
     public ResponseEntity<String>enrollCourse(@PathVariable Long courseId){
-        return ResponseEntity.ok(enrollementService.enroll(courseId));
+        return ResponseEntity.ok(enrollmentService.enroll(courseId));
+    }
+
+    @PostMapping("/{courseId}/lessons/{lessonId}/complete")
+    public ResponseEntity<Void>completeLesson(
+            @PathVariable Long courseId,
+            @PathVariable Long lessonId
+    ){
+        enrollmentService.completeLesson(courseId,lessonId);
+        return ResponseEntity.ok().build();
+
     }
 
 

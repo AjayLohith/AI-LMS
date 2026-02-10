@@ -28,6 +28,12 @@ public class Enrollment {
     @Column(nullable = false)
     private boolean status;
 
+    @Column(nullable = false)
+    private int completedLessons;
+
+    @Column(nullable = false)
+    private double completionPercentage;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id",nullable = false)
     private User user;
