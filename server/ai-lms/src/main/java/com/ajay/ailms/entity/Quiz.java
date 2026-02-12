@@ -21,7 +21,15 @@ public class Quiz {
     @Column(nullable = false)
     private String title;
 
-    private Long passingScore;
+    @Column(length = 2000)
+    private String description;
+
+    @Column(nullable = false)
+    private Integer passingScore;
+
+    @Column(nullable = false)
+    private Integer timeLimitInMinutes;
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "lesson_id",nullable = false)

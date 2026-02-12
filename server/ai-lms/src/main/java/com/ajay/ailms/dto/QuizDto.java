@@ -1,17 +1,16 @@
 package com.ajay.ailms.dto;
 
-import com.ajay.ailms.entity.Question;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class QuizDto {
     private Long id;
     private String title;
