@@ -21,7 +21,6 @@ public class CourseService {
                 .map(this::mapToDto);
     }
 
-
     public Page<CourseDto> getMyEnrolledCourses(Long id,Pageable pageable) {
         return courseRepo.findCoursesByStudentId(id,pageable)
                 .map(this::mapToDto);
