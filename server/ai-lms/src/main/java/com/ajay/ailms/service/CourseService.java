@@ -37,6 +37,5 @@ public class CourseService {
         dto.setCreatedAt(course.getCreatedAt());
         dto.setInstructorName(course.getInstructor().getUsername());
         return dto;
-
     }
 }

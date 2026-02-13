@@ -95,7 +95,6 @@ public class InstructorService {
 
 
     public QuestionDto createQuestion(Long quizId, CreateQuestionDto dto) {
-
         User instructor = getCurrentInstructor();
 
         Quiz quiz = quizRepo
@@ -117,8 +116,31 @@ public class InstructorService {
         return mapToQuestionDto(question);
     }
 
+    public String deleteQuiz(Long quizId) {
+        User instructor=getCurrentInstructor();
+        Quiz quiz=quizRepo.findByIdAndLessonCourseInstructor(quizId,instructor)
+                .orElseThrow(()->new RuntimeException("Quiz not found"));
+        quizRepo.delete(quiz);
+        return "Quiz Deleted Successfully";
+    }
 
+    public String deleteQuestion(Long questionId) {
+        User instructor=getCurrentInstructor();
+        Question question= questionRepo
+                .findByIdAndQuizLessonCourseInstructor(questionId,instructor)
+                .orElseThrow(()->new RuntimeException("Question not found"));
+        questionRepo.delete(question);
+        return "Question deleted successfully";
+    }
 
+    public String deleteCourse(Long courseId) {
+        User instructor=getCurrentInstructor();
+        Course course=courseRepo
+                .findByIdAndInstructor(courseId,instructor)
+                .orElseThrow(()->new RuntimeException("Course not found"));
+        courseRepo.delete(course);
+        return "Course Deleted successfully";
+    }
 
 
 
@@ -143,7 +165,6 @@ public class InstructorService {
         dto.setTimeLimitInMins(quiz.getTimeLimitInMinutes());
         dto.setCreatedAt(quiz.getCreatedAt());
         dto.setTotalQuestions(quiz.getQuestions().size());
-
 
         Set<QuestionDto> questionDtos = quiz.getQuestions()
                 .stream()
@@ -177,5 +198,6 @@ public class InstructorService {
                 .createdAt(lesson.getCreatedAt())
                 .build();
     }
+
 
 }

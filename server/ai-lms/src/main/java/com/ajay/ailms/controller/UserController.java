@@ -1,8 +1,9 @@
 package com.ajay.ailms.controller;
 
-import com.ajay.ailms.dto.CourseDto;
+import com.ajay.ailms.dto.*;
 import com.ajay.ailms.service.CourseService;
 import com.ajay.ailms.service.EnrollmentService;
+import com.ajay.ailms.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     private final CourseService courseService;
     private final EnrollmentService enrollmentService;
+    private final UserService userService;
 
 
     @GetMapping("/enroll-course")
@@ -51,6 +53,19 @@ public class UserController {
         enrollmentService.completeLesson(courseId,lessonId);
         return ResponseEntity.ok().build();
 
+    }
+
+    @PostMapping("/quiz/{quizId}")
+    public ResponseEntity<StudentQuizDto>quiz(
+            @PathVariable Long quizId,
+            @RequestBody QuestionViewDto dto)
+    {
+        return ResponseEntity.ok(userService.attemptQuiz(quizId,dto));
+    }
+
+    @PostMapping("/submit-quiz")
+    public ResponseEntity<QuizResultDto>submitQuiz(@RequestBody SubmitQuizDto dto){
+        return ResponseEntity.ok(userService.submitQuiz(dto));
     }
 
 
