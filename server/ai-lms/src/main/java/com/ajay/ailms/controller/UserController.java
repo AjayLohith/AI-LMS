@@ -23,9 +23,10 @@ public class UserController {
     private final UserService userService;
 
 
-    @GetMapping("/enroll-course")
-    public String enroll(){
-        return "Enrolled";
+    @PostMapping("/enroll-course/{courseId}")
+    public ResponseEntity<String> enroll(@PathVariable Long courseId){
+
+        return ResponseEntity.ok(userService.enrollCourse(courseId));
     }
 
     @GetMapping("/{id}/my-courses")
@@ -35,8 +36,11 @@ public class UserController {
 
     @GetMapping("/all-courses")
     public ResponseEntity<Page<CourseDto>>getAllCourses(
-            @PageableDefault(size = 10,sort = "createdAt",direction = Sort.Direction.DESC)
-            Pageable pageable){
+            @PageableDefault(size = 10,
+                    sort = "createdAt",
+                    direction = Sort.Direction.DESC)
+            Pageable pageable)
+    {
         return ResponseEntity.ok(courseService.getAllCourses(pageable));
     }
 
@@ -55,12 +59,11 @@ public class UserController {
 
     }
 
-    @PostMapping("/quiz/{quizId}")
+    @GetMapping("/quiz/{quizId}")
     public ResponseEntity<StudentQuizDto>quiz(
-            @PathVariable Long quizId,
-            @RequestBody QuestionViewDto dto)
+            @PathVariable Long quizId)
     {
-        return ResponseEntity.ok(userService.attemptQuiz(quizId,dto));
+        return ResponseEntity.ok(userService.attemptQuiz(quizId));
     }
 
     @PostMapping("/submit-quiz")

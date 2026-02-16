@@ -72,8 +72,6 @@ public class InstructorService {
         return mapToQuizDto(quiz);
     }
 
-
-
     public LessonDto createLesson(Long courseId, CreateLessonDto dto) {
 
         User instructor = getCurrentInstructor();

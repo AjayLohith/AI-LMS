@@ -1,5 +1,6 @@
 package com.ajay.ailms.repo;
 
+import com.ajay.ailms.entity.Course;
 import com.ajay.ailms.entity.Quiz;
 import com.ajay.ailms.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,4 +11,5 @@ public interface QuizRepository extends JpaRepository<Quiz, Long> {
     Optional<Quiz> findByIdAndLessonCourseInstructor(Long quizId, User instructor);
 
 
+//    boolean existsByUserAndCourse(User student, Course course);
 }

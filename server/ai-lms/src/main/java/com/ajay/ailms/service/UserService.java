@@ -6,10 +6,12 @@ import com.ajay.ailms.repo.CourseRepository;
 import com.ajay.ailms.repo.EnrollmentRepository;
 import com.ajay.ailms.repo.QuizRepository;
 import com.ajay.ailms.repo.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -31,8 +33,38 @@ public class UserService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
-    public StudentQuizDto attemptQuiz(Long quizId, QuestionViewDto dto) {
+    public StudentQuizDto attemptQuiz(Long quizId) {
+        Quiz quiz=quizRepo.findById(quizId).orElseThrow(()->new RuntimeException("Quiz doesnt exist"));
 
+        User student=getCurrentUser();
+        Course course=quiz.getLesson().getCourse();
+
+        boolean enrolled=enrollmentRepo.existsByUserAndCourse(student,course);
+        if(!enrolled){
+            throw new RuntimeException("Student not enrolled to this course");
+        }
+        List<QuestionViewDto>questionViewDtos=quiz.getQuestions()
+                .stream()
+                .map(question -> QuestionViewDto.builder()
+                        .id(question.getId())
+                        .questionText(question.getQuestion())
+                        .options(List.of(
+                                question.getOptionA(),
+                                question.getOptionB(),
+                                question.getOptionC(),
+                                question.getOptionD()
+                        ))
+                        .build()
+                )
+                .toList();
+
+        return StudentQuizDto.builder()
+                .id(quiz.getId())
+                .title(quiz.getTitle())
+                .description(quiz.getDescription())
+                .timeLimitInMins(quiz.getTimeLimitInMinutes())
+                .questions(questionViewDtos)
+                .build();
     }
 
     public QuizResultDto submitQuiz(SubmitQuizDto dto) {
@@ -93,5 +125,27 @@ public class UserService {
                 .build();
     }
 
+    @Transactional
+    public String enrollCourse(Long courseId) {
+        User user=getCurrentUser();
 
+        Course course=courseRepo.findById(courseId).orElseThrow(()->new RuntimeException("Course does not exist"));
+
+        boolean enrolled=enrollmentRepo.existsByUserAndCourse(user,course);
+
+        if(enrolled){
+            throw new RuntimeException("User already enrolled in this course");
+        }
+
+        Enrollment enrollment=Enrollment.builder()
+                .user(user)
+                .course(course)
+                .status(true)
+                .completedLessons(0)
+                .completionPercentage(0.0)
+                .build();
+
+        enrollmentRepo.save(enrollment);
+        return "Enrollment successful";
+    }
 }
