@@ -1,6 +1,8 @@
 package com.ajay.ailms.service;
 
+import com.ajay.ailms.dto.CourseDto;
 import com.ajay.ailms.dto.UserDto;
+import com.ajay.ailms.entity.Course;
 import com.ajay.ailms.entity.User;
 import com.ajay.ailms.entity.type.Role;
 import com.ajay.ailms.repo.CourseRepository;
@@ -31,6 +33,13 @@ public class AdminService {
         return userRepo.findAll(pageable)
                 .map(this::mapToUserDto);
     }
+
+    public Page<CourseDto> getAllCourses(Pageable pageable) {
+        return courseRepo.findAll(pageable)
+                .map(this::mapToCourseDto);
+    }
+
+
 
     public String promoteUser(Long userId) {
         User user=userRepo.findById(userId)
@@ -78,6 +87,18 @@ public class AdminService {
         dto.setName(user.getUsername());
         dto.setRole(String.valueOf(user.getRole()));
         dto.setEmail(user.getEmail());
+        return dto;
+    }
+
+    private CourseDto mapToCourseDto(Course course) {
+        CourseDto dto=new CourseDto();
+        dto.setId(course.getId());
+        dto.setTitle(course.getTitle());
+        dto.setDescription(course.getDescription());
+        dto.setInstructorName(course.getInstructor().getUsername());
+        dto.setDifficulty(course.getDifficulty());
+        dto.setRating(course.getRating());
+        dto.setCreatedAt(course.getCreatedAt());
         return dto;
     }
 

@@ -1,6 +1,7 @@
 package com.ajay.ailms.controller;
 
 import com.ajay.ailms.dto.AdminDto;
+import com.ajay.ailms.dto.CourseDto;
 import com.ajay.ailms.dto.UserDto;
 import com.ajay.ailms.entity.User;
 import com.ajay.ailms.service.AdminService;
@@ -21,9 +22,22 @@ public class AdminController {
     private final AdminService adminService;
 
 
-//    GET /admin/courses
+//    GET /admin/courses---done
+
 //    DELETE /admin/courses/{id}
+
 //    PUT /admin/courses/{id}/disable
+
+    public ResponseEntity<Page<CourseDto>>getAllCourses(
+            @PageableDefault(
+                    size = 10,
+                    sort="createdAt",
+                    direction = Sort.Direction.DESC
+            )
+            Pageable pageable
+    ){
+        return ResponseEntity.ok(adminService.getAllCourses(pageable));
+    }
 
     @GetMapping("/users")
     public ResponseEntity<Page<UserDto>>getAllUsers(
@@ -34,7 +48,7 @@ public class AdminController {
             )
             Pageable pageable
     ){
-        return ResponseEntity.ok(( adminService.getAllUsers(pageable)));
+        return ResponseEntity.ok(adminService.getAllUsers(pageable));
     }
 
     @PutMapping("/users/{id}/promote")
